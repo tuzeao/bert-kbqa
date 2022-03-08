@@ -204,12 +204,12 @@ def main():
 
 
         ner_model = get_ner_model(config_file = './input/config/bert-base-chinese-config.json',
-                                  pre_train_model = './output/best_ner.bin',label_num = len(ner_processor.get_labels()))
+                                  pre_train_model = './output_bert-crf/best_ner.bin',label_num = len(ner_processor.get_labels()))
         ner_model = ner_model.to(device)
         ner_model.eval()
 
         sim_model = get_sim_model(config_file='./input/config/bert-base-chinese-config.json',
-                                  pre_train_model='./output/best_sim.bin',
+                                  pre_train_model='./output_bert-sim/best_sim.bin',
                                   label_num=len(sim_processor.get_labels()))
 
         sim_model = sim_model.to(device)
