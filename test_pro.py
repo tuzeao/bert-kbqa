@@ -5,11 +5,13 @@ from transformers import BertTokenizer, BertConfig, BertForSequenceClassificatio
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
 import torch
 import pymysql
-from tqdm import tqdm, trange
+# from tqdm import tqdm, trange
+import pymongo
+import os
 
-
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+device = torch.device(f"cuda:{os.getenv('CUDA_VISIBLE_DEVICES')}" if torch.cuda.is_available() else "cpu")
+db = pymongo.MongoClient("mongodb://zj184x.corp.youdao.com:30000/")["chat_baike"]
+db_triples = db['triple_2500w']
 
 def get_ner_model(config_file,pre_train_model,label_num = 2):
     model = BertCrf(config_name=config_file,num_tags=label_num, batch_first=True)
@@ -190,9 +192,7 @@ def text_match(attribute_list,answer_list,sentence):
         return "",""
 
 
-
 def main():
-
     with torch.no_grad():
         tokenizer_inputs = ()
         tokenizer_kwards = {'do_lower_case': False,
@@ -227,9 +227,16 @@ def main():
             if '' == entity:
                 print("未发现实体")
                 continue
-            sql_str = "select * from nlpccqa where entity = '{}'".format(entity)
-            triple_list = select_database(sql_str)
-            triple_list = list(triple_list)
+
+
+
+            # sql_str = "select * from nlpccqa where entity = '{}'".format(entity)
+            # triple_list = select_database(sql_str)
+            # triple_list = list(triple_list)
+            triple_list = [[item['item_name'], item['attr'], item['value']] for item in
+                           db_triples.find({"item_name": entity}, {'_id': 0, 'item_name': 1, 'attr': 1, 'value': 1})]
+
+
             if 0 == len(triple_list):
                 print("未找到 {} 相关信息".format(entity))
                 continue
