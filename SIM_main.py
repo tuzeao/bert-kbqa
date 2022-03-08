@@ -388,8 +388,8 @@ def main():
     assert os.path.exists(args.pre_train_model)
 
 
-    args.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+    #args.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    args.device = torch.device(f"cuda:{os.getenv('CUDA_VISIBLE_DEVICES')}" if torch.cuda.is_available() else "cpu")
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S',
                         level=logging.INFO)
