@@ -4,8 +4,9 @@ from SIM_main import SimProcessor,SimInputFeatures
 from transformers import BertTokenizer, BertConfig, BertForSequenceClassification
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
 import torch
-import pymysql
+# import pymysql
 # from tqdm import tqdm, trange
+import time
 import pymongo
 import os
 
@@ -218,6 +219,7 @@ def main():
         while True:
             print("====="*10)
             raw_text = input("问题：\n")
+            begin = time.time()
             raw_text = raw_text.strip()
             if ( "quit" == raw_text ):
                 print("quit")
@@ -226,6 +228,7 @@ def main():
             print("实体:", entity)
             if '' == entity:
                 print("未发现实体")
+                print(f"time cost: {round((time.time()-begin)*1000, 1)}ms")
                 continue
 
 
@@ -239,6 +242,7 @@ def main():
 
             if 0 == len(triple_list):
                 print("未找到 {} 相关信息".format(entity))
+                print(f"time cost: {round((time.time()-begin)*1000, 1)}ms")
                 continue
             triple_list = list(zip(*triple_list))
             # print(triple_list)
@@ -248,12 +252,12 @@ def main():
             if attribute != '' and answer != '':
                 ret = "{}的{}是{}".format(entity, attribute, answer)
             else:
-                sim_model = get_sim_model(config_file='./input/config/bert-base-chinese-config.json',
-                                          pre_train_model='./output/best_sim.bin',
-                                          label_num=len(sim_processor.get_labels()))
+                #sim_model = get_sim_model(config_file='./input/config/bert-base-chinese-config.json',
+                #                          pre_train_model='./output_bert-sim/best_sim.bin',
+                #                          label_num=len(sim_processor.get_labels()))
 
-                sim_model = sim_model.to(device)
-                sim_model.eval()
+                #sim_model = sim_model.to(device)
+                #sim_model.eval()
                 attribute_idx = semantic_matching(sim_model, tokenizer, raw_text, attribute_list, answer_list, 64).item()
                 if -1 == attribute_idx:
                     ret = ''
@@ -263,8 +267,10 @@ def main():
                     ret = "{}的{}是{}".format(entity, attribute, answer)
             if '' == ret:
                 print("未找到{}相关信息".format(entity))
+                print(f"time cost: {round((time.time()-begin)*1000, 1)}ms")
             else:
                 print("回答:",ret)
+                print(f"time cost: {round((time.time()-begin)*1000, 1)}ms")
 
 if __name__ == '__main__':
     main()
