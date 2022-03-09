@@ -1,4 +1,3 @@
-# --data_dir
 # ./input/data/ner_data
 # --vob_file
 # ./input/config/bert-base-chinese-vocab.txt
@@ -268,6 +267,7 @@ def trains(args,train_dataset,eval_dataset,model):
         epoch_iterator = tqdm(train_dataloader, desc="Iteration")
         for step,batch in enumerate(epoch_iterator):
             batch = tuple(t.to(args.device) for t in batch)
+            #batch = tuple(t for t in batch)
             inputs = {'input_ids':batch[0],
                       'attention_mask':batch[1],
                       'token_type_ids':batch[2],
@@ -322,10 +322,10 @@ def evaluate_and_save_model(args,model,eval_dataset,epoch,global_step,best_f1):
     avg_precision = precision_b * weight_b + precision_i * weight_i
     avg_recall = recall_b * weight_b + recall_i * weight_i
     avg_f1 = f1_b * weight_b + f1_i * weight_i
-
-    all_avg_precision = ret['micro avg']['precision']
-    all_avg_recall = ret['micro avg']['recall']
-    all_avg_f1 = ret['micro avg']['f1-score']
+    #print(ret)
+    all_avg_precision = ret['weighted avg']['precision']
+    all_avg_recall = ret['weighted avg']['recall']
+    all_avg_f1 = ret['weighted avg']['f1-score']
 
     logger.info("Evaluating EPOCH = [%d/%d] global_step = %d", epoch+1,args.num_train_epochs,global_step)
     logger.info("B-LOC precision = %f recall = %f  f1 = %f support = %d", precision_b, recall_b, f1_b,
@@ -371,6 +371,7 @@ def evaluate(args, model, eval_dataset):
     for batch in tqdm(eval_dataloader, desc="Evaluating"):
         model.eval()
         batch = tuple(t.to(args.device) for t in batch)
+        #batch = tuple(t for t in batch)
         with torch.no_grad():
             inputs = {'input_ids':batch[0],
                       'attention_mask':batch[1],
@@ -446,7 +447,7 @@ def main():
 
     args = parser.parse_args()
 
-    args.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    args.device = torch.device(f"cuda:{os.getenv('CUDA_VISIBLE_DEVICES')}" if torch.cuda.is_available() else "cpu")
 
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S',
