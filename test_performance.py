@@ -10,8 +10,8 @@ import torch
 import pymongo
 import os
 
-# device = torch.device(f"cuda:{os.getenv('CUDA_VISIBLE_DEVICES')}" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device = torch.device(f"cuda:0" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cpu")
 db = pymongo.MongoClient("mongodb://zj184x.corp.youdao.com:30000/")["chat_baike"]
 db_triples = db['triple']
 
@@ -184,7 +184,9 @@ ner_model = get_ner_model(config_file = './input/config/bert-base-chinese-config
 ner_model = ner_model.to(device)
 ner_model.eval()
 
-sim_model = get_sim_model(config_file='./input/config/bert-base-chinese-config.json',
+sim_model = get_sim_model(
+                          #config_file='./input/config/bert-base-chinese-config.json',
+                          config_file='./input/config/bert-base-chinese-config-test.json',
                           pre_train_model='./output_bert-sim/best_sim.bin',
                           label_num=len(sim_processor.get_labels()))
 

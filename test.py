@@ -10,11 +10,10 @@ def load_file(path,length):#all_message
             data.append(x)
     return data
 
-
-data = [x[0] for x in load_file("test", 1)]
+data = load_file("test", 1)
+data = [x[0].strip() for x in data]
 for query in data:
     result = process(query)
     print("\t".join(result))
-
 
 

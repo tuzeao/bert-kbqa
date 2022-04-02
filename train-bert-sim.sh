@@ -4,6 +4,8 @@ python="/ssd/exec/tuzeao/anaconda3/envs/baike/bin/python"
 
 mkdir -p output_bert-sim
 
+#export CUDA_VISIBLE_DEVICES=1
+
 $python SIM_main.py \
   --data_dir=./input/data/sim_data \
   --vob_file=./input/config/bert-base-chinese-vocab.txt \

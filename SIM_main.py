@@ -44,7 +44,6 @@ import pandas as pd
 logger = logging.getLogger(__name__)
 
 
-
 def set_seed(args):
     random.seed(args.seed)
     np.random.seed(args.seed)
@@ -389,7 +388,8 @@ def main():
 
 
     #args.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    args.device = torch.device(f"cuda:{os.getenv('CUDA_VISIBLE_DEVICES')}" if torch.cuda.is_available() else "cpu")
+    #args.device = torch.device(f"cuda:{os.getenv('CUDA_VISIBLE_DEVICES')}" if torch.cuda.is_available() else "cpu")
+    args.device = torch.device(f"cuda:6" if torch.cuda.is_available() else "cpu")
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S',
                         level=logging.INFO)
