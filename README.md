@@ -1,5 +1,7 @@
 # bert-kbqa
 基于bert的kbqa系统
+链接：https://www.cxyzjd.com/article/Chen_Meng_/103212519
+
 
 预训练模型太大了，无法上传。放在百度网盘了
 链接：https://pan.baidu.com/s/1EK-TGghfmj-0HbWl_xe3zg 
