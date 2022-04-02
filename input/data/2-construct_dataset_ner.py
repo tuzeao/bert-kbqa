@@ -73,5 +73,4 @@ for file_name in file_name_list:
     df = pd.DataFrame(q_t_a_list, columns=["q_str", "t_str", "a_str"])
     file_type = file_name.split('.')[0]
     csv_name = file_type+'.'+'csv'
-
     df.to_csv(os.path.join(new_dir,csv_name), encoding='utf-8', index=False)
