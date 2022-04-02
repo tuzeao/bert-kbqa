@@ -118,9 +118,9 @@ def semantic_matching(model,tokenizer,question,attribute_list,answer_list,max_le
         features.append(
             SimInputFeatures(input_ids = input_ids,attention_mask = attention_mask,token_type_ids = token_type_ids)
         )
-    all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
-    all_attention_mask = torch.tensor([f.attention_mask for f in features], dtype=torch.long)
-    all_token_type_ids = torch.tensor([f.token_type_ids for f in features], dtype=torch.long)
+    all_input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.float16)
+    all_attention_mask = torch.tensor([f.attention_mask for f in features], dtype=torch.float16)
+    all_token_type_ids = torch.tensor([f.token_type_ids for f in features], dtype=torch.float16)
 
     assert all_input_ids.shape == all_attention_mask.shape
     assert all_attention_mask.shape == all_token_type_ids.shape
