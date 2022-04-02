@@ -6,7 +6,6 @@ from SIM_main import SimProcessor,SimInputFeatures
 from transformers import BertTokenizer, BertConfig, BertForSequenceClassification
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler, TensorDataset
 import torch
-import pymysql
 # from tqdm import tqdm, trange
 import pymongo
 import os
@@ -70,7 +69,7 @@ def get_entity(model,tokenizer,sentence,max_len = 64):
     o_idx = CRF_LABELS.index('O')
 
     if b_loc_idx not in pre_tag and i_loc_idx not in pre_tag:
-        print("没有在句子[{}]中发现实体".format(sentence))
+        #print("没有在句子[{}]中发现实体".format(sentence))
         return ''
     if b_loc_idx in pre_tag:
 
@@ -203,7 +202,8 @@ def process(query):
                    db_triples.find({"item_name": entity}, {'_id': 0, 'item_name': 1, 'attr': 1, 'value': 1})]
 
 
-    # if 0 == len(triple_list):
+    if 0 == len(triple_list):
+        return  list(map(lambda x: str(x), [query, entity, "-", ""]))
     #     print("未找到 {} 相关信息".format(entity))
     triple_list = list(zip(*triple_list))
     attribute_list = triple_list[1]
@@ -225,7 +225,7 @@ def process(query):
     #     print("未找到{}相关信息".format(entity))
     # else:
     #     print("回答:",ret)
-    return [query, entity, is_semantic_matching, ret]
+    return list(map(lambda x: str(x), [query, entity, is_semantic_matching, ret]))
 
 
 if __name__ == '__main__':
